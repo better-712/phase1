@@ -69,8 +69,8 @@ id      ({alpha})+
             loc.step();
             return Parser::make_EOL(loc);
           }
-"+"       { return Parser::make_ADD(loc); }
-"-"       { return Parser::make_SUB(loc); }
+"+"       { return Parser::make_PLUS(loc); }
+"-"       { return Parser::make_MINUS(loc); }
 "*"       { return Parser::make_MUL(loc); }
 "/"       { return Parser::make_DIV(loc); }
 "("       { return Parser::make_LPAREN(yytext,loc); }
