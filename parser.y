@@ -81,7 +81,7 @@
 
 %%
 calclist: %empty{}
-    | calclist Exp EOL{cout << "=" << $1 << "\n>";}
+    | calclist Exp EOL{cout << "=" << $2 << "\n>";}
         ;
 
 Exp : NUMBER {$$=$1;}
