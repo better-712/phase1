@@ -79,35 +79,18 @@
 
 %left <string>LPAREN
 
-%type <float> exp calclist factor term
+%type <float> Exp calclist 
 
 %start calclist
 
 %%
-calclist: %empty           { /* 使用%empty显示的声明该规则是一个空规则 */ }
-        | calclist exp EOL { cout << "=" << $2 << "\n>"; }
+calclist: Exp EOL{cout << "=" << $1 << "\n>";}
         ;
 
-exp: factor         { $$ = $1; }
-   | exp ADD factor { $$ = $1 + $3; }
-   | exp SUB factor { $$ = $1 - $3; }
-   ;
-
-factor: term            { $$ = $1; }
-      | factor MUL term { $$ = $1 * $3; }
-      | factor DIV term {
-        if($3 == 0){
-          error(@3, "zero divide");
-          YYABORT;
-        }
-        $$ = $1 / $3;
-      }
-      ;
-
-term: NUMBER               { $$ = $1; }
-    | ABS exp ABS         { $$ = $2 >= 0 ? $2 : -1 * $2; }
-    | LPAREN exp RPAREN    { $$ = $2; }
-    | SUB exp %prec NEG    { $$ = -1 * $2; }
+Exp : Exp ADD Exp{ $$ = $1 + $3; }
+    | Exp SUB Exp{ $$ = $1 - $3; }
+    | Exp MUL Exp{ $$ = $1 * $3; }
+    | Exp DIV Exp{ $$ = $1 / $3; }
     ;
 
 %%
