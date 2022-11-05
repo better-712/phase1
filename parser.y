@@ -84,7 +84,7 @@ calclist: %empty{}
     | calclist Exp EOL{cout << "=" << $1 << "\n>";}
         ;
 
-Exp : NUMER {$$=$1;}
+Exp : NUMBER {$$=$1;}
     | Exp PLUS Exp{ $$ = $1 + $3; }
     | Exp MINUS Exp{ $$ = $1 - $3; }
     | Exp MUL Exp{ $$ = $1 * $3; }
