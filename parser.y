@@ -67,28 +67,26 @@
 
 %token EOL
 %token END 0
+%token PLUS MINUS MUL DIV
 
-%left ADD "+"
-%left SUB "-"
+%left PLUS "+"
+%left MINUS "-"
 %left MUL "*"
 %left DIV "/"
 
-%nonassoc ABS "|"
-
-%nonassoc NEG // 负号具有最高优先级但没有结合性
-
-%left <string>LPAREN
 
 %type <float> Exp calclist 
 
 %start calclist
 
 %%
-calclist: Exp EOL{cout << "=" << $1 << "\n>";}
+calclist: %empty{}
+    | calclist Exp EOL{cout << "=" << $1 << "\n>";}
         ;
 
-Exp : Exp ADD Exp{ $$ = $1 + $3; }
-    | Exp SUB Exp{ $$ = $1 - $3; }
+Exp : NUMER {$$=$1;}
+    | Exp PLUS Exp{ $$ = $1 + $3; }
+    | Exp MINUS Exp{ $$ = $1 - $3; }
     | Exp MUL Exp{ $$ = $1 * $3; }
     | Exp DIV Exp{ $$ = $1 / $3; }
     ;
