@@ -10,6 +10,6 @@ using namespace Marker;
 int main(int argc, char const *argv[]) {
   /* code */
   Driver driver;
-  driver.parse();
+  driver.parse(argv[1]);
   return 0;
 }
