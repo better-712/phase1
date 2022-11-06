@@ -49,188 +49,188 @@ FLOAT                   {DIGIT}+"."{DIGIT}*
 %}
 
 {DECIMAL_INT} {
-	//std::cout << "DECIMAL_INT" << std::endl;
+	std::cout << "DECIMAL_INT" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::INT;
 }
 
 {HEX_INT} {
-	//std::cout << "HEX_INT" << std::endl;
+	std::cout << "HEX_INT" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::INT;
 }
 
 {CHAR}|{HEX_CHAR} {
-	//std::cout << "{CHAR}|{HEX_CHAR}" << std::endl;
+	std::cout << "{CHAR}|{HEX_CHAR}" << std::endl;
 	  yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::CHAR;
 }
 
 {FLOAT} {
-	//std::cout << "FLOAT" << std::endl;
+	std::cout << "FLOAT" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::FLOAT;
 }
 
 {ID} {
-	//std::cout << "ID" << std::endl;
+	std::cout << "ID" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::ID;
 }
 
 int|float|char {        // reserved type
-	//std::cout << "int|float|char" << std::endl;
+	std::cout << "int|float|char" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::TYPE;
 }
 
 "struct" {             // reserved key word
-	//std::cout << "struct" << std::endl;
+	std::cout << "struct" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::STRUCT;
 }
 
 "if" {             // reserved key word
-	//std::cout << "if" << std::endl;
+	std::cout << "if" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::IF;
 }
 
 "else" {             // reserved key word
-	//std::cout << "else" << std::endl;
+	std::cout << "else" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::ELSE;
 }
 
 "while" {             // reserved key word
-	//std::cout << "while" << std::endl;
+	std::cout << "while" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::WHILE;
 }
 
 "return" {             // reserved key word
-	//std::cout << "return" << std::endl;
+	std::cout << "return" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::RETURN;
 }
 
 
 "." {
-	//std::cout << "DOT" << std::endl;
+	std::cout << "DOT" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::DOT;
 }
 
 ";" {
-	//std::cout << "SEMI" << std::endl;
+	std::cout << "SEMI" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::SEMI;
 }
 
 "," {
-	//std::cout << "COMMA" << std::endl;
+	std::cout << "COMMA" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::COMMA;
 }
 
 "=" {
-	//std::cout << "ASSIGN" << std::endl;
+	std::cout << "ASSIGN" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::ASSIGN;
 }
 
 "<" {
-	//std::cout << "LT" << std::endl;
+	std::cout << "LT" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::LT;
 }
 
 "<=" {
-	//std::cout << "LE" << std::endl;
+	std::cout << "LE" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::LE;
 }
 
 ">" {
-	//std::cout << "GT" << std::endl;
+	std::cout << "GT" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::GT;
 }
 
 ">=" {
-	//std::cout << "GE" << std::endl;
+	std::cout << "GE" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::GE;
 }
 
 "!=" {
-	//std::cout << "NE" << std::endl;
+	std::cout << "NE" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::NE;
 }
 
 "==" {
-	//std::cout << "EQ" << std::endl;
+	std::cout << "EQ" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::EQ;
 }
 
 "+" {
-	//std::cout << "PLUS" << std::endl;
+	std::cout << "PLUS" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::PLUS;
 }
 
 "-" {
-	//std::cout << "MINUS" << std::endl;
+	std::cout << "MINUS" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::MINUS;
 }
 
 "*" {
-	//std::cout << "MUL" << std::endl;
+	std::cout << "MUL" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::MUL;
 }
 
 "/" {
-	//std::cout << "DIV" << std::endl;
+	std::cout << "DIV" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::DIV;
 }
 
 "&&" {
-	//std::cout << "AND" << std::endl;
+	std::cout << "AND" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::AND;
 }
 
 "||" {
-	//std::cout << "OR" << std::endl;
+	std::cout << "OR" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return token::OR;
 }
 
 "!" {
-	//std::cout << "NOT" << std::endl;
+	std::cout << "NOT" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return token::NOT;
 }
 
 "("|")" {
-	//std::cout << "LPRP" << std::endl;
+	std::cout << "LPRP" << std::endl;
 	yylval->build<Info*>(new Info(std::string(yytext), yylineno));
 	return yytext[0] == '(' ? token::LP : token::RP;
 }
 
 "["|"]" {
-    //std::cout << "LBRB" << std::endl;
+    std::cout << "LBRB" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return yytext[0] == '[' ? token::LB : token::RB;
 }
 
 "{"|"}" {
-    //std::cout << "LCRC" << std::endl;
+    std::cout << "LCRC" << std::endl;
     yylval->build<Info*>(new Info(std::string(yytext), yylineno));
     return yytext[0] == '{' ? token::LC : token::RC;
 }
