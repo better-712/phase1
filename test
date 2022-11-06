@@ -1,0 +1,4 @@
+int test_spl()
+{ 3 int i = 0, j = 1;
+float i = 1;
+}
