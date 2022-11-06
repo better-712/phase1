@@ -63,18 +63,18 @@
 
 
 %token               END    0     "end of file"
-%token <Scan_Info *> INT
-%token <Scan_Info *> FLOAT
-%token <Scan_Info *> CHAR
-%token <Scan_Info *> TYPE ID
-%token <Scan_Info *> STRUCT IF ELSE WHILE RETURN
-%token <Scan_Info *> ASSIGN
-%token <Scan_Info *> DOT SEMI COMMA
-%token <Scan_Info *> EQ LE LT GE GT NE
-%token <Scan_Info *> PLUS MINUS MUL DIV
-%token <Scan_Info *> AND OR NOT
-%token <Scan_Info *> LP RP LC RC LB RB
-%token <Scan_Info *> ERROR
+%token <Info *> INT
+%token <Info *> FLOAT
+%token <Info *> CHAR
+%token <Info *> TYPE ID
+%token <Info *> STRUCT IF ELSE WHILE RETURN
+%token <Info *> ASSIGN
+%token <Info *> DOT SEMI COMMA
+%token <Info *> EQ LE LT GE GT NE
+%token <Info *> PLUS MINUS MUL DIV
+%token <Info *> AND OR NOT
+%token <Info *> LP RP LC RC LB RB
+%token <Info *> ERROR
 
 
 %%
