@@ -12,10 +12,11 @@
 namespace Marker {
   class Driver {
   private:
-    Parser _parser;
-    Scanner _scanner;
+    Parser parser;
+    Scanner scanner;
   public:
-    Driver();
+    Driver():scanner{nullptr}, parser{nullptr}{};
+    virtual ~Driver();
 
     void parse(const char *filename);
 
