@@ -11,76 +11,238 @@
   #include "scanner.h"   //包含yyFlexLexer子类的头文件
   #include "location.hh" //包含位置调试信息头文件
 
-  static Marker::location loc;//声明位置实例
-  #define YY_USER_ACTION  loc.columns (yyleng); /* 定义了YY_USER_ACTION，该宏在每个记号的语义动作之前被调用，来根据记号的长度设置位置的信息 */
 
-  #undef yywrap
-  #define yywrap() 1
+  #undef  YY_DECL
+  #define YY_DECL int Marker::Scanner::yylex( Marker::Parser::semantic_type * const lval, Marker::Parser::location_type *location )
 
-  using namespace Marker;
-  #define yyterminate() Parser::make_END(loc);
+  using token = Marker::Parser::token;
+  
+  #define YY_USER_ACTION loc.step();loc.columns (yyleng); 
+  
+  #define yyterminate() return( token::END )
 %}
-/* 声明使用C++版本FLEXER，c++是大小写不敏感的 */
+
+
+
+%option debug
+%option nodefault
+%option yylineno
+%option yyclass="Marker::Scanner"
+/* 支持调试 */
+%option noyywrap 
 %option c++
 
-/* 支持调试 */
-%option noyywrap debug
+DIGIT                   [0-9]
+ID                      [a-zA-Z_][0-9a-zA-Z_]*
 
-/* 使用Scanner::yylex() */
-%option yyclass="Scanner"
+DECIMAL_INT             ([1-9]{DIGIT}{0,9}|0)
+HEX_INT                 0[xX]([1-9A-Fa-f][0-9A-Fa-f]*|0)
 
-/* 一些与编译常量使用该前缀否则为yy */
-%option prefix="Marker_"
+CHAR                    '.'
+HEX_CHAR                '\\x[0-9A-Fa-f][0-9A-Fa-f]'
 
-/*正则式的各种简写，使程序有层次感而显得明晰 */
-string  \"[^\n"]+\"
-/**/
-ws      [ \t]+
-alpha   [A-Za-z]
-dig     [0-9]
-name    ({alpha}|{dig}|\$)({alpha}|{dig}|[_.\-/$])*
-num1    {dig}+\.?([eE][-]?{dig}+)?
-num2    {dig}*\.{dig}+([eE][-]?{dig}+)?
-number  {num1}|{num2}
-id      ({alpha})+
-
+FLOAT                   {DIGIT}+"."{DIGIT}*
 
 %%
 %{
-  // C++ 兼容的词法分析器的规则，step函数把位置的起始值设置为与结束值相等，这样位置就指向了上一个极少的结束位置。
-  loc.step();
+  yylval = lval;
 %}
 
+{DECIMAL_INT} {
+	//std::cout << "DECIMAL_INT" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::INT;
+}
 
-{number}  {
-            return Parser::make_NUMBER(std::strtof(yytext,(&yytext+yyleng)),loc); // strtof函数将字符串转换为浮点数
-          }
+{HEX_INT} {
+	//std::cout << "HEX_INT" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::INT;
+}
 
-"//".* |
-[ \t]     {
-            /* 跳过注释和空白符号 */
-            // step函数把位置的起始值设置为与结束值相等，这样位置就指向了上一个极少的结束位置。
-            // 由于注释和空白符号识别后并不会返回，而前一个step的调用是在上一次yylex返回时，所以此处需要手动更新记号的起始位置
-            loc.step();
-          }
+{CHAR}|{HEX_CHAR} {
+	//std::cout << "{CHAR}|{HEX_CHAR}" << std::endl;
+	  yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::CHAR;
+}
 
-\n        {
-            loc.lines(yyleng); // 使用lines函数来更新位置信息中的行号
-            loc.step();
-            return Parser::make_EOL(loc);
-          }
-"+"       { return Parser::make_PLUS(loc); }
-"-"       { return Parser::make_MINUS(loc); }
-"*"       { return Parser::make_MUL(loc); }
-"/"       { return Parser::make_DIV(loc); }
-"("       { return Parser::make_LPAREN(yytext,loc); }
-")"       { return Parser::make_RPAREN(yytext,loc); }
-"|"       { return Parser::make_ABS(loc); }
-{id}      { return Parser::make_IDENTIFIER(yytext,loc); }
-<<EOF>>   { return yyterminate(); }
-.         {
-             printf("Mystery character %c\n", *yytext);
-             loc.step();
-          }
+{FLOAT} {
+	//std::cout << "FLOAT" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::FLOAT;
+}
+
+{ID} {
+	//std::cout << "ID" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::ID;
+}
+
+int|float|char {        // reserved type
+	//std::cout << "int|float|char" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::TYPE;
+}
+
+"struct" {             // reserved key word
+	//std::cout << "struct" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::STRUCT;
+}
+
+"if" {             // reserved key word
+	//std::cout << "if" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::IF;
+}
+
+"else" {             // reserved key word
+	//std::cout << "else" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::ELSE;
+}
+
+"while" {             // reserved key word
+	//std::cout << "while" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::WHILE;
+}
+
+"return" {             // reserved key word
+	//std::cout << "return" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::RETURN;
+}
+
+
+"." {
+	//std::cout << "DOT" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::DOT;
+}
+
+";" {
+	//std::cout << "SEMI" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::SEMI;
+}
+
+"," {
+	//std::cout << "COMMA" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::COMMA;
+}
+
+"=" {
+	//std::cout << "ASSIGN" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::ASSIGN;
+}
+
+"<" {
+	//std::cout << "LT" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::LT;
+}
+
+"<=" {
+	//std::cout << "LE" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::LE;
+}
+
+">" {
+	//std::cout << "GT" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::GT;
+}
+
+">=" {
+	//std::cout << "GE" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::GE;
+}
+
+"!=" {
+	//std::cout << "NE" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::NE;
+}
+
+"==" {
+	//std::cout << "EQ" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::EQ;
+}
+
+"+" {
+	//std::cout << "PLUS" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::PLUS;
+}
+
+"-" {
+	//std::cout << "MINUS" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::MINUS;
+}
+
+"*" {
+	//std::cout << "MUL" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::MUL;
+}
+
+"/" {
+	//std::cout << "DIV" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::DIV;
+}
+
+"&&" {
+	//std::cout << "AND" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::AND;
+}
+
+"||" {
+	//std::cout << "OR" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return token::OR;
+}
+
+"!" {
+	//std::cout << "NOT" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::NOT;
+}
+
+"("|")" {
+	//std::cout << "LPRP" << std::endl;
+	yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+	return yytext[0] == '(' ? token::LP : token::RP;
+}
+
+"["|"]" {
+    //std::cout << "LBRB" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return yytext[0] == '[' ? token::LB : token::RB;
+}
+
+"{"|"}" {
+    //std::cout << "LCRC" << std::endl;
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return yytext[0] == '{' ? token::LC : token::RC;
+}
+
+[ \r\t\n]+ {
+   
+}
+
+. {
+    yylval->build<Scan_Info*>(new Scan_Info(std::string(yytext), yylineno));
+    return token::ERROR;
+}
+
 %%
 //这里可以放一些C或者C++代码
