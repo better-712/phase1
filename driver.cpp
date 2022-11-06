@@ -20,7 +20,7 @@ Driver::~Driver() {
 void Driver::parse(const char *filename) {
   assert(filename != nullptr);
   std::ifstream in_file(filename);
-  _scanner = new Scanner(&is);
+  _scanner = new Scanner(in_file);
   _parser = new Parser(*_scanner, *this);
   _parser.parse();
 }
