@@ -4,6 +4,7 @@
 
 #include "driver.h"
 #include <iostream>
+#include <fstream>
 
 using namespace Marker;
 using namespace std;
