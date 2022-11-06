@@ -17,7 +17,7 @@ namespace Marker {
   public:
     Driver();
 
-    int parse();
+    void parse();
 
     virtual ~Driver();
   };
