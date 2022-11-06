@@ -8,7 +8,7 @@
 using namespace Marker;
 using namespace std;
 
-Driver::Driver() : _scanner(*this), _parser(_scanner, *this) {
+Driver::Driver() : _scanner{nullptr}, _parser{nullptr} {
 
 }
 
@@ -16,7 +16,10 @@ Driver::~Driver() {
 
 }
 
-int Driver::parse() {
-  _scanner.switch_streams(cin, cout);
-  return _parser.parse();
+void Driver::parse(const char *filename) {
+  assert(filename != nullptr);
+  std::ifstream in_file(filename);
+  _scanner = new Scanner(&is);
+  _parser = new Parser(*_scanner, *this);
+  _parser.parse();
 }
