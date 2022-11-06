@@ -22,6 +22,7 @@
   using namespace std;
 
   namespace Marker { /*避免包含头文件时冲突*/
+    class Info;
     class Scanner;
     class Driver;
   }
@@ -64,32 +65,21 @@
 
 
 
-%token <float>NUMBER
-%token EOL
-%token END 0
-%token PLUS MINUS MUL DIV
-
-%left PLUS "+"
-%left MINUS "-"
-%left MUL "*"
-%left DIV "/"
-
-
-%type <float> Exp calclist 
-
-%start calclist
+%token               END    0     "end of file"
+%token <Scan_Info *> INT
+%token <Scan_Info *> FLOAT
+%token <Scan_Info *> CHAR
+%token <Scan_Info *> TYPE ID
+%token <Scan_Info *> STRUCT IF ELSE WHILE RETURN
+%token <Scan_Info *> ASSIGN
+%token <Scan_Info *> DOT SEMI COMMA
+%token <Scan_Info *> EQ LE LT GE GT NE
+%token <Scan_Info *> PLUS MINUS MUL DIV
+%token <Scan_Info *> AND OR NOT
+%token <Scan_Info *> LP RP LC RC LB RB
+%token <Scan_Info *> ERROR
 
 %%
-calclist: %empty{}
-    | calclist Exp EOL{cout << "=" << $2 << "\n>";}
-        ;
-
-Exp : NUMBER {$$=$1;}
-    | Exp PLUS Exp{ $$ = $1 + $3; }
-    | Exp MINUS Exp{ $$ = $1 - $3; }
-    | Exp MUL Exp{ $$ = $1 * $3; }
-    | Exp DIV Exp{ $$ = $1 / $3; }
-    ;
 
 %%
 /*Parser实现错误处理接口*/
