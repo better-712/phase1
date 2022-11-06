@@ -5,24 +5,15 @@
 #ifndef FLEX_BISON_SCANNER_H
 #define FLEX_BISON_SCANNER_H
 
-/***********************************/
-/*对yyFlexLexer进行继承，获得更多的控制
-*
-***********************************/
 
-/* 重要 */
 #if !defined(yyFlexLexerOnce)
-#undef yyFlexLexer
-#define yyFlexLexer Marker_FlexLexer  // 根据prefix修改
 
 #include <FlexLexer.h>
 
 #endif
-/* 替换默认的get_next_token定义 */
-#undef YY_DECL
-#define YY_DECL Marker::Parser::symbol_type Marker::Scanner::nextToken()
 
 #include "parser.hpp"
+#include "location.hh"
 
 namespace Marker {
   class Driver;
@@ -30,16 +21,21 @@ namespace Marker {
   class Scanner : public yyFlexLexer {
   private:
     /* data */
-    Driver &_driver;
+    Marker::Parser::semantic_type *yylval = nullptr;
+    Marker::Parser::location_type *loc = nullptr;
 
   public:
-    Scanner(Marker::Driver &driver) : _driver(driver) {}
+    
+    Scanner(std::istream *in) : yyFlexLexer(in){
+    loc = new Marker::Parser::location_type();
+    };
 
-    virtual Marker::Parser::symbol_type nextToken(); // 不需要手动实现这个函数，Flex会生成YY_DECL宏定义的代码来实现这个函数
-
-    virtual ~Scanner() {}
+    using FlexLexer::yylex;
+    virtual int yylex(Marker::Parser::semantic_type *const lval,
+                       Marker::Parser::location_type *location);
+    
   };
-} /* Marker */
+} 
 
 
 #endif //FLEX_BISON_SCANNER_H
