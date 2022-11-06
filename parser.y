@@ -79,6 +79,27 @@
 
 %%
 list:INT{std::cout<<"hhhhhhhhhh"<<std::endl;}
+    |FLOAT
+    |CHAR
+    |TYPE
+    |ID
+    |STRUCT
+    |IF
+    |ELSE
+    |WHILE
+    |RETURN
+    |ASSIGN
+    |DOT
+    |SEMI
+    |COMMA
+    |LP
+    |RP
+    |LC
+    |RC
+    |LB
+    |RB
+    |AND
+    |OR
 
 %%
 /*Parser实现错误处理接口*/
