@@ -14,13 +14,6 @@
 %code requires
 {
   /*requires中的内容会放在YYLTYPE与YYSTPYPE定义前*/
-  #include <iostream>
-  #include <string>
-  #include <vector>
-  #include <stdint.h>
-  #include <cmath>
-  using namespace std;
-
   namespace Marker { /*避免包含头文件时冲突*/
     class Info;
     class Scanner;
@@ -39,6 +32,10 @@
 
 %code top
 {
+  #include <string>
+  #include <vector>
+  #include <stdint.h>
+  #include <cmath>
   #include <fstream>
   #include <iostream>
   #include "scanner.h"
@@ -79,11 +76,13 @@
 %token <Scan_Info *> LP RP LC RC LB RB
 %token <Scan_Info *> ERROR
 
+
 %%
+list:INT{std::cout<<"hhhhhhhhhh"<<std::endl;}
 
 %%
 /*Parser实现错误处理接口*/
-void Marker::Parser::error(const Marker::location& location,const std::string& message){
+void Marker::Parser::error(const location_type &l,const std::string& message){
   std::cout<<"msg:"<<message
-           <<", error happened at: "<<location<<std::endl;
+           <<", error happened at: "<<l.begin<<std::endl;
 }
