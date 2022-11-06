@@ -16,6 +16,15 @@
 #include "location.hh"
 
 namespace Marker {
+  
+  class Info {
+    public:
+        std::string lexeme;
+        int line_no;
+
+        Info(std::string lexeme, int line) : lexeme{lexeme}, line_no{line} {};
+  };
+  
   class Driver;
 
   class Scanner : public yyFlexLexer {
